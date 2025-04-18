@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netflix Clone</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <nav class="navbar">
+      <div class="logo">
+        <img src="assets/netflix.svg" alt="Netflix Logo" @error="handleLogoError">
+        <span class="logo-text" v-if="!logoLoaded">Netflix</span>
+      </div>
+      <div class="filters">
+        <select v-model="selectedGenre" @change="filterMovies">
+          <option value="">Todos os gêneros</option>
+          <option v-for="genre in genres" :value="genre.id">{{ genre.name }}</option>
+        </select>
+        <select v-model="selectedSort" @change="sortMovies">
+          <option value="popularity.desc">Mais Popular</option>
+          <option value="vote_average.desc">Melhores Avaliados</option>
+          <option value="release_date.desc">Novos</option>
+        </select>
+      </div>
+    </nav>
+    <div class="hero">
+      <h1>Assista seu filme favorito!</h1>
+    </div>
+    <div class="movies">
+      <div class="category" v-for="(category, index) in categories" :style="{ '--category-index': index }">
+        <h2>{{ category.name }}</h2>
+        <div class="carousel">
+          <button class="carousel-btn left" @click="scrollCarousel($event, -200)" v-if="category.movies.length">❮</button>
+          <div class="movie-grid" :ref="'carousel-' + index">
+            <div class="movie-card" v-for="(movie, cardIndex) in category.movies" :key="movie.id" :style="{ '--card-index': cardIndex }">
+              <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title">
+              <div class="title">{{ movie.title }}</div>
+              <div class="overlay">
+                <div class="title">{{ movie.title }}</div>
+                <div class="year">{{ movie.release_date ? movie.release_date.split('-')[0] : 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-btn right" @click="scrollCarousel($event, 200)" v-if="category.movies.length">❯</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.2.37/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          genres: [],
+          selectedGenre: '',
+          selectedSort: 'popularity.desc',
+          logoLoaded: true,
+          categories: [
+            { name: 'Em Alta Agora', movies: [] },
+            { name: 'Melhores Avaliados', movies: [] }
+          ]
+        };
+      },
+      methods: {
+        async fetchGenres() {
+          const response = await fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=640bbfa640489586214cfd63c520897c');
+          const data = await response.json();
+          this.genres = data.genres;
+        },
+        async fetchMovies() {
+          const endpoints = [
+            `https://api.themoviedb.org/3/movie/popular?api_key=640bbfa640489586214cfd63c520897c`,
+            `https://api.themoviedb.org/3/movie/top_rated?api_key=640bbfa640489586214cfd63c520897c`
+          ];
+          const responses = await Promise.all(endpoints.map(url => fetch(url)));
+          const data = await Promise.all(responses.map(res => res.json()));
+          this.categories[0].movies = data[0].results.slice(0, 10);
+          this.categories[1].movies = data[1].results.slice(0, 10);
+        },
+        async filterMovies() {
+          if (!this.selectedGenre) {
+            this.fetchMovies();
+            return;
+          }
+          const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=640bbfa640489586214cfd63c520897c&with_genres=${this.selectedGenre}&sort_by=${this.selectedSort}`);
+          const data = await response.json();
+          this.categories[0].movies = data.results.slice(0, 10);
+          this.categories[1].movies = data.results.slice(10, 20);
+        },
+        sortMovies() {
+          this.filterMovies();
+        },
+        scrollCarousel(event, amount) {
+          const carousel = event.target.parentElement.querySelector('.movie-grid');
+          carousel.scrollLeft += amount;
+        },
+        handleLogoError() {
+          this.logoLoaded = false;
+        }
+      },
+      mounted() {
+        this.fetchGenres();
+        this.fetchMovies();
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

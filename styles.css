@@ -1,0 +1,265 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background: #141414;
+    color: #fff;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    transition: background 0.3s ease;
+  }
+  
+  .navbar.scrolled {
+    background: rgba(0, 0, 0, 0.95);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    height: 30px;
+    width: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  .logo img:hover {
+    transform: scale(1.1);
+  }
+  
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #e50914;
+    transition: transform 0.3s ease;
+  }
+  
+  .logo-text:hover {
+    transform: scale(1.1);
+  }
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .filters select {
+    padding: 8px;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .filters select:focus,
+  .filters select:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(229, 9, 20, 0.5);
+    outline: none;
+  }
+  
+  .hero {
+    height: 62vh;
+    background: url('assets/space.gif') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    margin-top: 80px;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+    margin-top: 40px;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    max-width: 50%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.5s forwards;
+  }
+  
+  .movies {
+    padding: 20px 5%;
+  }
+  
+  .category {
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: calc(0.2s * var(--category-index));
+  }
+  
+  .category h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+  }
+  
+  .category h2:hover {
+    color: #e50914;
+  }
+  
+  .carousel {
+    position: relative;
+  }
+  
+  .movie-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 15px;
+    padding-bottom: 10px;
+    scrollbar-width: none;
+  }
+  
+  .movie-grid::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .movie-card {
+    position: relative;
+    min-width: 200px;
+    max-width: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+    animation-delay: calc(0.1s * var(--card-index));
+  }
+  
+  .movie-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+  
+  .movie-card:hover {
+    transform: scale(1.15);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    z-index: 10;
+  }
+  
+  .movie-card .title {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: opacity 0.3s ease;
+  }
+  
+  .movie-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    transition: opacity 0.3s ease;
+  }
+  
+  .movie-card:hover .overlay {
+    opacity: 1;
+  }
+  
+  .movie-card .overlay .title {
+    font-size: 1rem;
+    background: none;
+    padding: 0;
+  }
+  
+  .movie-card .overlay .year {
+    font-size: 0.8rem;
+    color: #ccc;
+  }
+  
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s ease;
+  }
+  
+  .carousel-btn:hover {
+    background: rgba(229, 9, 20, 0.7);
+  }
+  
+  .carousel-btn.left {
+    left: 0;
+  }
+  
+  .carousel-btn.right {
+    right: 0;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2rem;
+      max-width: 100%;
+    }
+    .movie-card {
+      min-width: 150px;
+      max-width: 150px;
+    }
+    .movie-card img {
+      height: 220px;
+    }
+    .carousel-btn {
+      padding: 8px;
+    }
+    .logo img {
+      height: 25px;
+    }
+  }
