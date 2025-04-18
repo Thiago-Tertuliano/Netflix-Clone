@@ -8,8 +8,6 @@ Este projeto é um clone da interface inicial do **Netflix**, desenvolvido com f
 
 ![preview](assets/netflix.png) <!-- Substitua pelo seu link ou GIF se tiver -->
 
-Você pode acessar o projeto aqui: [🔗 Deploy no GitHub Pages](https://seuusuario.github.io/netflix-clone)
-
 ---
 
 ## 🧪 Funcionalidades
